@@ -44,3 +44,18 @@ P = Imputed, Carry Forward
 Z = Implied zero
 
 Filter: keep XOMACHRT and XOMAWDN8 in {R, C}. Report drop count.
+
+## Award mix finding (important)
+OMAWDN8 counts any award: certificate, associate's, or bachelor's.
+Award mix differs sharply by sector:
+  public 4yr:            3.8% cert / 70.3% bach
+  private nonprofit 4yr: 2.4% cert / 89.0% bach
+  for-profit 2yr:       72.0% cert /  0.4% bach
+
+=> The narrow for-profit "Pell gap" (0.007) is an artifact of award mix,
+   not evidence of equitable outcomes. Certificates are short and
+   near-universally completed.
+
+Decision: report cert_share alongside the gap, AND include it as a
+covariate in the GLM. Do not restrict to 4yr — that would drop the
+community colleges where most Pell students enroll.
