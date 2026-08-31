@@ -27,3 +27,20 @@ XOMACHRT, XOMAWDN8 — values TBD, see src/read_imp.py output
 Cohort 11/12 (FTFT Pell / non-Pell). Standard comparison group, largest N.
 Limitation: excludes part-time and transfer students, who skew lower-income,
 so this likely understates the overall Pell gap.
+
+## Imputation flag values  [sheet: Imputation values]
+R = Reported                          <- KEEP
+C = Analyst corrected reported value  <- KEEP
+A = Not applicable
+B = Institution left item blank
+D = Do not know
+G = Generated from other data values
+H = Value not derived - not usable
+J = Logical imputation
+K = Ratio adjustment
+L = Imputed, Group Median
+N = Imputed, Nearest Neighbor
+P = Imputed, Carry Forward
+Z = Implied zero
+
+Filter: keep XOMACHRT and XOMAWDN8 in {R, C}. Report drop count.
