@@ -19,7 +19,7 @@ log("FTFT Pell + non-Pell", om)
 om = om[om.XOMACHRT.isin(KEEP_FLAGS) & om.XOMAWDN8.isin(KEEP_FLAGS)]
 log("after imputation filter", om)
 
-wide = om.pivot(index="UNITID", columns="OMCHRT", values=["OMACHRT", "OMAWDN8"])
+wide = om.pivot(index="UNITID", columns="OMCHRT", values=["OMACHRT", "OMAWDN8", "OMCERT8"])
 wide.columns = [f"{'pell' if c == 11 else 'nonpell'}_{v.lower()}" for v, c in wide.columns]
 wide = wide.reset_index()
 log("pivoted to one row/inst", wide)
@@ -35,6 +35,8 @@ log("both cohorts >= 30", wide)
 wide["pell_fail"] = wide.pell_omachrt - wide.pell_omawdn8
 wide["nonpell_rate"] = wide.nonpell_omawdn8 / wide.nonpell_omachrt
 wide["pell_rate"] = wide.pell_omawdn8 / wide.pell_omachrt
+wide["cert_share"] = wide.pell_omcert8 / wide.pell_omawdn8.replace(0, pd.NA)
+
 
 
 # ---- YOUR PART: merge features -------------------------------------------
@@ -56,5 +58,7 @@ wide = wide.merge(adm[["UNITID", "admit_rate"]], on="UNITID", how="left")
 log("+ adm2024", wide)
 print("   missing admit rate:", wide.admit_rate.isna().sum())
 
+wide["locale4"] = wide.LOCALE // 10
+wide["is_open_admission"] = wide.admit_rate.isna().astype(int)
 wide.to_csv("data/processed/institutions.csv", index=False)
 log("FINAL", wide)
