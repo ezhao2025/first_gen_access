@@ -38,12 +38,23 @@ wide["pell_rate"] = wide.pell_omawdn8 / wide.pell_omachrt
 
 
 # ---- YOUR PART: merge features -------------------------------------------
-# hd2024     -> CONTROL, ICLEVEL, LOCALE, STOBBR, INSTNM, HBCU
-# ef2024d    -> retention rate, student-faculty ratio
-# sfa2324    -> pct undergrads awarded Pell
-# adm2024    -> admit rate (only ~1,956 institutions — decide how to handle)
-#
-# Use load(), left-merge on UNITID, and log() after every merge.
+# ---- features -------------------------------------------------------------
+hd = load("hd2024")[["UNITID", "INSTNM", "STABBR", "SECTOR", "ICLEVEL", "CONTROL",
+                     "HBCU", "TRIBAL", "LOCALE", "INSTSIZE", "C21BASIC", "WEBADDR"]]
+wide = wide.merge(hd, on="UNITID", how="left")
+log("+ hd2024", wide)
+print("   missing CONTROL:", wide.CONTROL.isna().sum())
+
+ef = load("ef2024d")[["UNITID", "RET_PCF", "STUFACR"]]
+wide = wide.merge(ef, on="UNITID", how="left")
+log("+ ef2024d", wide)
+print("   missing retention:", wide.RET_PCF.isna().sum())
+
+adm = load("adm2024")[["UNITID", "APPLCN", "ADMSSN"]]
+adm["admit_rate"] = adm.ADMSSN / adm.APPLCN
+wide = wide.merge(adm[["UNITID", "admit_rate"]], on="UNITID", how="left")
+log("+ adm2024", wide)
+print("   missing admit rate:", wide.admit_rate.isna().sum())
 
 wide.to_csv("data/processed/institutions.csv", index=False)
 log("FINAL", wide)
