@@ -31,3 +31,17 @@ Holdout (20%, n=512): MAE 0.067, corr 0.864
 
 ## Diagnostics
 VIF max 3.37 (ICLEVEL) — no collinearity problem.
+
+## Phase 3b — clustering (null result)
+K-means on structural features only (control, level, locale, size,
+retention, student-faculty ratio); outcome variables excluded to avoid
+circularity.
+
+Silhouette across k=2..20: rises monotonically from 0.200 to 0.415 with no
+elbow, never exceeding 0.5.
+
+=> No natural cluster structure. Institutions vary continuously in
+effectiveness rather than falling into discrete archetypes. Consistent
+with the GLM result that nonpell_rate (OR 15.6) dominates every
+categorical predictor: the meaningful variation is a continuum, not
+a typology.
