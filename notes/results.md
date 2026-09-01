@@ -45,3 +45,23 @@ effectiveness rather than falling into discrete archetypes. Consistent
 with the GLM result that nonpell_rate (OR 15.6) dominates every
 categorical predictor: the meaningful variation is a continuum, not
 a typology.
+
+## Phase 4 — TRIO SSS join
+Source: USASpending, CFDA 84.042, FY2016-2020 activity. 2,777 awards,
+966 unique grantees. Joined to IPEDS by state+city block, then fuzzy
+name match (token_sort_ratio). 917/966 blocked on state+city.
+Auto-accept >=95: 623 matches. 622 institutions in modeling sample.
+
+Descriptive: TRIO institutions have LOWER completion for both groups
+(Pell .425 vs .499; non-Pell .509 vs .564) and a WIDER gap (.083 vs .066).
+0% of for-profits hold SSS grants; 33.5% of publics do.
+
+Conditional (GLM): has_trio OR 0.930, significant under HC1 and quasi-binomial.
+
+INTERPRETATION: This is selection, not program effect. TRIO is competitively
+awarded to institutions serving students with barriers the covariates do not
+capture. The negative coefficient marks unmeasured need. No causal claim is
+possible from this design; identifying a program effect would require matching
+on pre-award characteristics or a discontinuity around funding thresholds.
+
+Main findings unchanged by adding has_trio — specification is stable.
