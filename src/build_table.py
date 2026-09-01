@@ -36,6 +36,8 @@ wide["pell_fail"] = wide.pell_omachrt - wide.pell_omawdn8
 wide["nonpell_rate"] = wide.nonpell_omawdn8 / wide.nonpell_omachrt
 wide["pell_rate"] = wide.pell_omawdn8 / wide.pell_omachrt
 wide["cert_share"] = wide.pell_omcert8 / wide.pell_omawdn8.replace(0, pd.NA)
+wide["cert_share_np"] = wide.nonpell_omcert8 / wide.nonpell_omawdn8.replace(0, pd.NA)
+wide["cert_mix_diff"] = wide.cert_share - wide.cert_share_np
 
 
 

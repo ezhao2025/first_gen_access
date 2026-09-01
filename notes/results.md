@@ -83,3 +83,16 @@ normalizer recovered 27 grantees (622 -> 649). has_trio OR moved 0.930 ->
 
 LIMITATION: SSS grants held at system level cannot be attributed to a campus,
 so institutions in multi-campus systems may be misclassified as unfunded.
+
+## Within-institution award mix (cert_mix_diff)
+cert_share is computed on the Pell subcohort. Added cert_share_np and
+cert_mix_diff (Pell cert share minus non-Pell cert share) to test whether
+the two groups pursue different credentials at the same institution.
+
+Distribution: median 0.000, IQR 0.000-0.000, mean -0.003, SD 0.086.
+Only 17 of 2,694 institutions exceed |0.5|.
+
+=> Not systemic. The extreme observed gaps (Rio Salado: non-Pell 651 certs
+vs Pell 6; Columbia Central-Caguas: Pell 284 certs vs non-Pell 7) are
+award-mix artifacts at a small number of institutions, not a confound
+requiring a model-wide covariate.
