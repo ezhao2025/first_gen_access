@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Where does the Pell completion gap live?</title>
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --muted: #5c5c5c;
+    --rule: #e2e2e2;
+    --accent: #4a6fa5;
+    --flag: #c1442e;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font: 17px/1.65 Charter, Georgia, "Times New Roman", serif;
+    color: var(--ink);
+    background: #fdfdfc;
+  }
+  .wrap { max-width: 700px; margin: 0 auto; padding: 4rem 1.5rem 6rem; }
+  h1 { font-size: 2.1rem; line-height: 1.2; margin: 0 0 .6rem; letter-spacing: -.01em; }
+  .sub { color: var(--muted); font-size: 1.05rem; margin: 0 0 .5rem; }
+  .meta {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: .8rem; color: var(--muted);
+    border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
+    padding: .7rem 0; margin: 2rem 0 3rem;
+  }
+  h2 {
+    font-size: 1.05rem; text-transform: uppercase; letter-spacing: .07em;
+    margin: 3.5rem 0 1rem; padding-bottom: .4rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  h3 { font-size: 1.2rem; margin: 2.5rem 0 .6rem; }
+  p { margin: 0 0 1.1rem; }
+  figure { margin: 2rem 0; }
+  figure img { width: 100%; display: block; }
+  figcaption { font-size: .87rem; color: var(--muted); margin-top: .6rem; }
+  .lede { font-size: 1.15rem; }
+  .callout {
+    background: #f6f4ef; border-left: 3px solid var(--flag);
+    padding: 1.1rem 1.3rem; margin: 2rem 0; font-size: .96rem;
+  }
+  .callout strong { display: block; margin-bottom: .4rem; }
+  code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: .85em; background: #f0efec; padding: .1em .35em; border-radius: 2px;
+  }
+  table { width: 100%; border-collapse: collapse; font-size: .92rem; margin: 1.5rem 0; }
+  th, td { text-align: left; padding: .55rem .6rem; border-bottom: 1px solid var(--rule); }
+  th { font-weight: 600; font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+  td.num { font-family: ui-monospace, Menlo, monospace; text-align: right; }
+  ul { padding-left: 1.2rem; }
+  li { margin-bottom: .5rem; }
+  a { color: var(--accent); }
+  footer {
+    margin-top: 4rem; padding-top: 1.5rem; border-top: 1px solid var(--rule);
+    font-size: .88rem; color: var(--muted);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Where does the Pell completion gap live?</h1>
+<p class="sub">An institution-level analysis of completion disparities across 2,699 U.S. colleges.</p>
+
+<div class="meta">
+  IPEDS Outcome Measures &middot; 2016&ndash;17 entering cohort &middot; 8-year status point (Aug 2024) &middot;
+  binomial GLM &middot; holdout MAE 0.067
+</div>
+
+<p class="lede">Students receiving Pell Grants complete degrees at lower rates than their peers. The usual explanation is compositional: Pell students concentrate at community colleges and less-resourced institutions, so the gap is really a story about <em>where</em> they enroll. This analysis tests that directly, and finds it mostly wrong.</p>
+
+<h2>The gap is not uniform</h2>
+
+<p>Across 2,699 institutions, the mean gap between non-Pell and Pell completion is 7.0 percentage points. But the spread is enormous &mdash; a standard deviation of 12.7 points, and at a quarter of institutions the gap is at or below one point. At some, Pell students complete at <em>higher</em> rates than their peers.</p>
+
+<figure>
+  <img src="img/gap_dist.png" alt="Histogram of the Pell completion gap across institutions, centered near 0.07 with wide spread">
+  <figcaption>Distribution of the completion gap. Values below zero are institutions where Pell students outperform their peers.</figcaption>
+</figure>
+
+<p>That variance is the whole premise. If the gap were a fixed property of being low-income, it would look the same everywhere. It doesn't, which means institutional context is doing something &mdash; and the question is what.</p>
+
+<h2>What actually predicts it</h2>
+
+<p>The model is a binomial GLM fit on counts rather than rates, so institutions are weighted by cohort size. Critically, it includes each institution's <em>non-Pell</em> completion rate as a covariate. That turns every other coefficient into a conditional effect: not "does this school do well," but "does it do well for Pell students given how well it does for everyone else."</p>
+
+<h3>1. Institutional performance dominates</h3>
+
+<p>Non-Pell completion rate carries an odds ratio of 15.6 (CI 12.0&ndash;20.2). Once you know how well an institution serves its non-Pell students, sector and level tell you almost nothing more. Public versus private nonprofit is null. Two-year versus four-year is null.</p>
+
+<p>The compositional story is mostly wrong, but not in the direction people expect. It isn't that Pell students are at bad institutions &mdash; it's that the gap tracks overall institutional effectiveness rather than institutional <em>type</em>.</p>
+
+<h3>2. Towns and rural areas carry a real shortfall</h3>
+
+<figure>
+  <img src="img/locale_or.png" alt="Odds ratios by locale relative to city institutions: suburb 1.00, town 0.89, rural 0.92">
+  <figcaption>Odds ratios relative to city institutions, with 95% confidence intervals, conditional on institutional performance.</figcaption>
+</figure>
+
+<p>Pell students at town institutions complete at 0.89 times the odds of those at city institutions (p &lt; .001); at rural institutions, 0.92 (p = .008). Suburbs are indistinguishable from cities. This holds after controlling for the dominant covariate above, which makes it the most interesting result here &mdash; geography survives when institutional type does not.</p>
+
+<h3>3. There are no institutional archetypes</h3>
+
+<p>K-means on structural features produces silhouette scores rising monotonically from 0.200 at k=2 to 0.415 at k=20, with no elbow and no value above 0.5. There is no natural partition. Institutions vary along a continuum of effectiveness rather than falling into discrete types &mdash; which is exactly what finding 1 implies.</p>
+
+<h2>A check that changed the answer</h2>
+
+<div class="callout">
+  <strong>The for-profit result was an artifact.</strong>
+  Descriptively, for-profit institutions showed almost no Pell gap (0.007, against 0.070 at publics). The obvious reading &mdash; that they serve low-income students equitably &mdash; does not survive inspection. IPEDS <code>OMAWDN8</code> counts <em>any</em> award. At for-profit two-year institutions, 72% of awards are certificates and 0.4% are bachelor's degrees; at private nonprofit four-years, those figures are 2.4% and 89%. "Completion" is not the same outcome at both. Certificate share was added as a covariate, and the award mix is reported alongside every sector comparison.
+</div>
+
+<h2>Federal support goes where the gap is widest</h2>
+
+<p>TRIO Student Support Services is the federal program aimed precisely at low-income and first-generation students. Matching 966 SSS grantees from USASpending (CFDA 84.042, FY2016&ndash;2020 activity) against the institution table gives 649 matched institutions in the modeling sample.</p>
+
+<figure>
+  <img src="img/trio_coverage.png" alt="Scatter of TRIO coverage against mean gap by locale, showing town highest on both">
+  <figcaption>TRIO SSS coverage against the mean completion gap, by locale. Four aggregated points &mdash; descriptive only, not a fitted relationship.</figcaption>
+</figure>
+
+<p>The intuitive audit hypothesis is that underserved areas lack federal resources. The data says the reverse: town institutions have both the highest TRIO coverage (32.5%) and the widest gap; cities and suburbs have the lowest coverage and the narrowest gaps.</p>
+
+<p>In the model, holding TRIO status alongside everything else gives an odds ratio of 0.931 &mdash; TRIO institutions show <em>lower</em> conditional Pell completion. This is almost certainly selection rather than program failure. SSS is competitively awarded to institutions demonstrating need, so the coefficient marks barriers the covariates don't capture: local labor markets, student parental status, remediation rates, transportation. Nothing in this design can identify a program effect; that would require matching on pre-award characteristics or a discontinuity around funding thresholds.</p>
+
+<h2>How much of this to believe</h2>
+
+<table>
+  <tr><th>Finding</th><th>Odds ratio</th><th>Status</th></tr>
+  <tr><td>Non-Pell completion rate</td><td class="num">15.6</td><td>Robust</td></tr>
+  <tr><td>Town vs. city</td><td class="num">0.89</td><td>Robust</td></tr>
+  <tr><td>Rural vs. city</td><td class="num">0.92</td><td>Robust</td></tr>
+  <tr><td>For-profit control</td><td class="num">1.33</td><td>Robust</td></tr>
+  <tr><td>TRIO SSS status</td><td class="num">0.93</td><td>Robust (selection)</td></tr>
+  <tr><td>Certificate share</td><td class="num">1.26</td><td>Fragile across corrections</td></tr>
+  <tr><td>Open admission</td><td class="num">0.94</td><td>Null</td></tr>
+  <tr><td>Private nonprofit; 2yr vs 4yr; suburb</td><td class="num">&mdash;</td><td>Null</td></tr>
+</table>
+
+<p>Overdispersion is severe (Pearson &chi;&sup2;/df = 12.15), so reported p-values are the more conservative of HC1-robust and quasi-binomial for each coefficient. VIF maxes at 3.37. On a 20% holdout (n = 512), the model predicts institutional Pell completion with MAE 0.067 and correlation 0.864. Pseudo-R&sup2; saturates on grouped binomial data and is not reported.</p>
+
+<h2>Limitations</h2>
+
+<ul>
+  <li><strong>Pell is not first-generation.</strong> IPEDS has no first-generation variable. Pell receipt is a socioeconomic proxy and the two populations overlap without coinciding.</li>
+  <li><strong>The cohort is first-time full-time only</strong>, excluding part-time and transfer students, who skew lower-income. The gap here likely understates the overall disparity.</li>
+  <li><strong>Institutions with either subcohort under 30 were dropped</strong>, which removes small, specialized, and high-Pell institutions &mdash; some of the places where the question is most live.</li>
+  <li><strong>SSS grants held at system level</strong> cannot be attributed to a campus, so institutions in multi-campus systems may be misclassified as unfunded. Of 966 grantees, 279 went unmatched; manual review found these to be mostly system offices, plus some genuine naming-variant misses.</li>
+  <li><strong>Institution-level associations say nothing about individual students.</strong></li>
+</ul>
+
+<footer>
+  Data: NCES IPEDS (OM2024, HD2024, EF2024D, ADM2024) and USASpending.gov.
+  Analysis in Python &mdash; pandas, statsmodels, scikit-learn.
+  Match validation: 20 of 20 hand-verified auto-accepted matches correct.
+  <br><br>
+  <a href="https://github.com/ezhao2025/first_gen_access">Source and reproduction steps on GitHub</a>
+</footer>
+
+</div>
+</body>
+</html>
