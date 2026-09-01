@@ -11,7 +11,7 @@ trio = pd.read_csv("data/interim/trio_grantees.csv")
 
 def norm(s):
     s = str(s).upper()
-    s = re.sub(r"\b(THE|AT|OF|AND|INC)\b", " ", s)
+    s = re.sub(r"\b(THE|AT|OF|AND|INC|FOUNDATION|DISTRICT|SYSTEM|OFFICE|AREA)\b", " ", s)
     s = re.sub(r"[^A-Z0-9 ]", " ", s)
     return re.sub(r"\s+", " ", s).strip()
 

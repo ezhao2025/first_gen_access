@@ -65,3 +65,21 @@ possible from this design; identifying a program effect would require matching
 on pre-award characteristics or a discontinuity around funding thresholds.
 
 Main findings unchanged by adding has_trio — specification is stable.
+
+## TRIO match validation
+Auto-accept band (score >= 95): 655 matches, 649 in modeling sample.
+Hand-verified random 20: 20/20 correct (all scored 100.0 — sample did not
+test the 95-99 band).
+
+Reject band (<88): 279 unmatched grantees. Manual review of 20 shows three
+groups: (a) system/district offices holding grants centrally, with no single
+campus UNITID — correctly unmatched; (b) genuine misses from naming variants
+("Main Campus", district numbers) — est. 25-40% of rejects; (c) correct
+rejects, genuinely different institutions.
+
+Robustness: adding FOUNDATION/DISTRICT/SYSTEM/OFFICE/AREA to the name
+normalizer recovered 27 grantees (622 -> 649). has_trio OR moved 0.930 ->
+0.931. The estimate is not sensitive to match quality at the margin.
+
+LIMITATION: SSS grants held at system level cannot be attributed to a campus,
+so institutions in multi-campus systems may be misclassified as unfunded.
